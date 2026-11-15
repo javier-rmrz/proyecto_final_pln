@@ -1,0 +1,12 @@
+# Dependencias del Hito 1 (baseline de recuperacion dispersa)
+spacy>=3.7
+scikit-learn>=1.3        # TF-IDF + similitud coseno
+rank-bm25>=0.2.2         # BM25 Okapi
+pandas>=2.0              # tablas de resultados
+requests>=2.31          # generacion de consultas via LLM (Ollama / UC3M)
+jupyter                 # ejecutar el notebook
+nbconvert               # (re)generar el notebook ejecutado
+
+# Modelo de spaCy (descargar aparte, segun idioma del corpus):
+#   python -m spacy download en_core_web_sm     # ingles
+#   python -m spacy download es_core_news_sm    # espanol

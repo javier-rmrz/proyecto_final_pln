@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Datasets pesados (no se versionan)
+*.parquet
+*.zip
+foodcom_raw/
