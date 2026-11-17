@@ -6,11 +6,13 @@ relevantes (`relevant_ids`). Se mide si aparecen entre los primeros K resultados
 
   - Recall@K: fraccion de documentos relevantes recuperados en el top-K.
              (En known-item con 1 relevante equivale a "esta en el top-K": 0/1.)
-  - MRR    : media del inverso de la posicion del primer relevante
-             (0 si no aparece en los resultados devueltos).
+  - MRR@K  : media del inverso de la posicion del primer relevante
+             (0 si no aparece en los resultados devueltos). Como `evaluate`
+             recupera solo max(ks) resultados, el MRR esta truncado en ese
+             corte (MRR@10 con ks=(5, 10)) y asi se reporta.
 
 `recall_at_k` usa la definicion estandar de Recall@K.
-`mrr` calcula el Mean Reciprocal Rank.
+`reciprocal_rank` calcula el rango reciproco de una consulta.
 """
 
 from __future__ import annotations
@@ -92,7 +94,7 @@ def evaluate(
     n = len(per_query) or 1
     summary = {
         "n_queries": len(per_query),
-        "MRR": round(sum(r.rr for r in per_query) / n, 4),
+        f"MRR@{top_k}": round(sum(r.rr for r in per_query) / n, 4),
         **{
             f"Recall@{k}": round(sum(r.recall[k] for r in per_query) / n, 4)
             for k in ks
@@ -129,3 +131,52 @@ def failure_analysis(
                 }
             )
     return failures
+
+
+def full_rank(retriever, query_tokens: list[str], doc_id: str, n_docs: int) -> int:
+    """Posicion (1-based) de doc_id en el ranking COMPLETO del corpus."""
+    ranked = [d for d, _ in retriever.search(query_tokens, n_docs)]
+    return ranked.index(doc_id) + 1
+
+
+def diagnose_failures(
+    failures: list[dict],
+    retrievers: dict,
+    preprocess_fn,
+    doc_tokens: dict[str, list[str]],
+    doc_titles: dict[str, str],
+    top_n: int = 3,
+) -> list[dict]:
+    """
+    Detalle de cada consulta fallida para explicar POR QUE falla:
+      - posicion real del documento relevante en el ranking completo de cada metodo
+        (no es lo mismo quedar 12.o que 1.000.o),
+      - terminos de la consulta (ya preprocesados) que SI estan en el documento y
+        los que NO estan (la brecha lexica),
+      - titulos de las top_n recetas que el primer metodo devuelve en su lugar.
+
+    - retrievers : {"TF-IDF": retriever, "BM25": retriever}
+    - doc_tokens : {doc_id: lemas del documento tras el filtro de vocabulario}
+    - doc_titles : {doc_id: titulo de la receta}
+    """
+    n_docs = len(doc_tokens)
+    first = next(iter(retrievers.values()))
+    rows = []
+    for f in failures:
+        rel = f["relevant_ids"][0]
+        q_tokens = preprocess_fn(f["query"])
+        in_doc = set(doc_tokens[rel])
+        row = {
+            "qid": f["qid"],
+            "query": f["query"],
+            "receta": doc_titles[rel],
+        }
+        for name, retr in retrievers.items():
+            row[f"rank_{name}"] = full_rank(retr, q_tokens, rel, n_docs)
+        row["en_receta"] = [t for t in q_tokens if t in in_doc]
+        row["no_en_receta"] = [t for t in q_tokens if t not in in_doc]
+        row["devuelve_en_su_lugar"] = [
+            doc_titles[d] for d, _ in first.search(q_tokens, top_n)
+        ]
+        rows.append(row)
+    return rows
