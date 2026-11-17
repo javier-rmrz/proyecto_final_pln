@@ -96,10 +96,6 @@ def generate_queries(
                 "qid": f"q{i:02d}",
                 "query": query,
                 "relevant_ids": [doc["doc_id"]],
-                # Fragmento de origen (formato del enunciado). Como la unidad de
-                # indexacion es el documento completo, el "chunk" es el propio
-                # documento, por lo que source_chunk == doc_id.
-                "source_chunk": doc["doc_id"],
                 # campo auxiliar SOLO para la revision manual (se descarta al guardar):
                 "_source_preview": doc["text"][:200],
             }

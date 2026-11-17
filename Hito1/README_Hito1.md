@@ -19,8 +19,8 @@ Hito1/
 │   └── foodcom.py                Adaptador del dataset Food.com -> corpus.jsonl
 ├── data/
 │   ├── corpus_foodcom.jsonl      Corpus: 10.000 recetas (Food.com)
-│   ├── queries_foodcom.jsonl     34 consultas known-item (qid, query, relevant_ids, source_chunk)
-│   └── queries_foodcom_raw.jsonl Las 35 consultas originales del LLM, con el texto de origen
+│   ├── queries.jsonl             34 consultas known-item (qid, query, relevant_ids)
+│   └── queries_raw.jsonl         Las 35 consultas originales del LLM, con el texto de origen
 ├── requirements_hito1.txt
 ├── MILESTONE_1.md                Entregable de una página
 └── REVISION_consultas.md         Revisión manual de las consultas e historial de cambios
@@ -47,13 +47,13 @@ muestra las métricas (Recall@5, Recall@10 y MRR@10) y el análisis de fallos.
 
 | Método          | Recall@5 | Recall@10 | MRR@10 |
 |-----------------|:--------:|:---------:|:------:|
-| TF-IDF + coseno |  0.500   |  0.529    | 0.396  |
-| BM25            |  0.500   |  0.588    | 0.368  |
+| TF-IDF + coseno |  0.529   |  0.529    | 0.417  |
+| BM25            |  0.529   |  0.588    | 0.393  |
 
 Consultas generadas con `llama3.1:8b` en inglés y **parafraseadas** (el prompt prohíbe
 copiar el título y los ingredientes; solape léxico medio con la receta ~42 %). Revisión en
-`REVISION_consultas.md`: 1 descartada, 5 regeneradas y 3 reescritas a mano porque repetían
-el título. 14 de 34 consultas fallan en ambos métodos, sobre todo por **sinónimos** (la
+`REVISION_consultas.md`: 1 descartada, 5 regeneradas y 7 reescritas a mano (3 repetían el
+título, 2 tenían relleno vago y 2 eran ambiguas); 14 consultas revisadas a mano en total. 14 de 34 consultas fallan en ambos métodos, sobre todo por **sinónimos** (la
 consulta describe el plato con otras palabras), que un baseline léxico no puede salvar:
 ese es el techo que el RAG denso del Hito 2 debe superar.
 

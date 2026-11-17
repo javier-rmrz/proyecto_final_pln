@@ -108,7 +108,7 @@ def to_markdown(rows: list[dict]) -> str:
 def _main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[1])
     ap.add_argument("--corpus", default="data/corpus_foodcom.jsonl")
-    ap.add_argument("--queries", default="data/queries_foodcom.jsonl")
+    ap.add_argument("--queries", default="data/queries.jsonl")
     ap.add_argument("--write", default=None, help="fichero .md donde escribir la tabla")
     args = ap.parse_args()
 

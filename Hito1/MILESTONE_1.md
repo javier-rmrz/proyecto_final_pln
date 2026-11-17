@@ -17,16 +17,18 @@
 - **Consultas**: **34** consultas *known-item* en inglés generadas con **`llama3.1:8b`** (Ollama) a partir
   de 35 recetas al azar. El prompt prohíbe copiar el título y la lista de ingredientes.
   **Revisión** (`REVISION_consultas.md`): un cribado automático mide el solape de cada consulta con su
-  receta y con su título (`src/review_queries.py`); se descartó 1 consulta, se regeneraron 5 y, en una
-  segunda revisión manual, se **reescribieron a mano 3** que repetían el título completo.
+  receta y con su título (`src/review_queries.py`); se descartó 1 consulta y se regeneraron 5. En la
+  revisión manual (14 consultas leídas junto a su receta) se **reescribieron a mano 7**: 3 que repetían
+  el título, 2 con relleno vago del LLM (*"a specific type of rice"*) y 2 ambiguas (una casi idéntica a
+  otra consulta y un *fried rice* que valía para 29 recetas del corpus). Se guardan en `data/queries.jsonl`.
 - **Baselines**: TF-IDF + coseno (scikit-learn, `sublinear_tf`, norma L2) y BM25
   (`rank_bm25.BM25Okapi`, **k1 = 1,5**, **b = 0,75**).
 
 ## Resultados (10.000 recetas, 34 consultas)
 | Método          | Recall@5 | Recall@10 | MRR@10 |
 |-----------------|:--------:|:---------:|:------:|
-| TF-IDF + coseno |  0.500   |  0.529    | 0.396  |
-| BM25            |  0.500   |  0.588    | 0.368  |
+| TF-IDF + coseno |  0.529   |  0.529    | 0.417  |
+| BM25            |  0.529   |  0.588    | 0.393  |
 
 Con 34 consultas cada acierto vale ~0,03: la diferencia entre ambos métodos (1–2 consultas) no es
 concluyente. El MRR se calcula sobre el top-10 recuperado.
@@ -50,6 +52,8 @@ evaluación de la **generación** con un LLM de pesos abiertos.
 
 ## Uso de herramientas de IA generativa
 - **Generación de consultas**: `llama3.1:8b` vía Ollama local (`/api/generate`, temperatura 0,7).
-- **Asistentes de código**: ⟨asistentes usados para el baseline, el adaptador de Food.com y el notebook⟩.
-  Claude Code (Claude Opus 5.5) se usó en la revisión final: script de cribado de consultas,
-  análisis de fallos por consulta y coherencia de la documentación.
+- **Asistente de código**: hemos usado Claude Code (Claude Opus 5.5) como **apoyo en el desarrollo del
+  código** (preprocesado, baselines, evaluación, adaptador de Food.com, scripts de generación y cribado
+  de consultas, y el notebook) y en la **generación de los ficheros `.md`** (`MILESTONE_1.md`,
+  `README_Hito1.md` y `REVISION_consultas.md`). También preparó una propuesta razonada de la tercera
+  ronda de revisión manual, que el grupo comprobó frente a cada receta antes de firmarla.
