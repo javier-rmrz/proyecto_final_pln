@@ -12,7 +12,7 @@
 {"qid": "q12", "query": "Steamed vegetable puree soup with saffron and minimal dairy for a light meal option", "relevant_ids": ["recipe_389296"], "source_chunk": "recipe_389296"}
 {"qid": "q13", "query": "Smooth blended tropical drink with banana and fruit juices for summer.", "relevant_ids": ["recipe_125450"], "source_chunk": "recipe_125450"}
 {"qid": "q14", "query": "Greek pasta salad with tangy dressing and crumbled white cheese.", "relevant_ids": ["recipe_56786"], "source_chunk": "recipe_56786"}
-{"qid": "q15", "query": "Caribbean deviled eggs with a thick spicy filling recipe", "relevant_ids": ["recipe_373193"], "source_chunk": "recipe_373193"}
+{"qid": "q15", "query": "Island-style stuffed egg halves with a creamy, peppery yolk mix", "relevant_ids": ["recipe_373193"], "source_chunk": "recipe_373193"}
 {"qid": "q16", "query": "Warm dessert with bananas and pineapple topped with coconut and chocolate sauce", "relevant_ids": ["recipe_504373"], "source_chunk": "recipe_504373"}
 {"qid": "q17", "query": "New Orleans style cheesy potato casserole with crispy bacon and sour cream topping", "relevant_ids": ["recipe_434602"], "source_chunk": "recipe_434602"}
 {"qid": "q18", "query": "Homemade spice blend recipe for traditional East African red pepper sauce mix.", "relevant_ids": ["recipe_229508"], "source_chunk": "recipe_229508"}
@@ -21,8 +21,8 @@
 {"qid": "q21", "query": "smoked salmon salad with citrus and herbs for a light winter dinner", "relevant_ids": ["recipe_354403"], "source_chunk": "recipe_354403"}
 {"qid": "q22", "query": "Low-calorie Italian pasta dish with creamy sauce and fresh herbs.", "relevant_ids": ["recipe_516065"], "source_chunk": "recipe_516065"}
 {"qid": "q23", "query": "Baked ham glazed with sweet and spicy mixture over an open flame", "relevant_ids": ["recipe_192666"], "source_chunk": "recipe_192666"}
-{"qid": "q24", "query": "beef liver stew with Creole spices and sweetened tomatoes recipe", "relevant_ids": ["recipe_4692"], "source_chunk": "recipe_4692"}
-{"qid": "q25", "query": "Thai style baked sea bass in foil with spicy Asian marinade recipe", "relevant_ids": ["recipe_268374"], "source_chunk": "recipe_268374"}
+{"qid": "q24", "query": "Southern Louisiana style fried organ meat simmered in a sweet tomato and pepper sauce", "relevant_ids": ["recipe_4692"], "source_chunk": "recipe_4692"}
+{"qid": "q25", "query": "White fish fillets baked in a foil parcel with ginger, chili and a soy-citrus dressing", "relevant_ids": ["recipe_268374"], "source_chunk": "recipe_268374"}
 {"qid": "q26", "query": "Coconut and pineapple sweet bread recipe with coffee flavors and warm spices", "relevant_ids": ["recipe_308580"], "source_chunk": "recipe_308580"}
 {"qid": "q27", "query": "Sweet breakfast muffins with warm spices and crunchy cinnamon topping baked in individual cups", "relevant_ids": ["recipe_21597"], "source_chunk": "recipe_21597"}
 {"qid": "q28", "query": "Jamaican-style spice rub for grilled pork or chicken, includes sweet and smoky flavors", "relevant_ids": ["recipe_103891"], "source_chunk": "recipe_103891"}

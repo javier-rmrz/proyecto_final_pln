@@ -42,7 +42,7 @@ PROMPT_TEMPLATE = (
 
 def call_ollama(
     prompt: str,
-    model: str = "qwen2.5:1.5b",
+    model: str = "llama3.1:8b",
     url: str = "http://localhost:11434/api/generate",
     api_key: str | None = None,
     temperature: float = 0.7,
