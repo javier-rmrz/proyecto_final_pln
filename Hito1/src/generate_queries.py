@@ -8,7 +8,11 @@ manualmente al menos 10 consultas, descartando las triviales o ambiguas, y
 documentar esta revision."
 
 Formato de salida (una linea por consulta):
-    {"qid": "q01", "query": "...", "relevant_ids": ["doc_123"]}
+    {"qid": "q01", "query": "...", "relevant_ids": ["recipe_123"],
+     "source_chunk": "recipe_123_c00"}
+
+`source_chunk` es el fragmento del que sale la consulta. Como cada receta se
+indexa completa (un unico fragmento), siempre es `<doc_id>_c00`.
 
 El cliente LLM hace un POST a la API de Ollama (/api/generate). Soporta:
   - Ollama local      (http://localhost:11434/api/generate)
@@ -96,6 +100,10 @@ def generate_queries(
                 "qid": f"q{i:02d}",
                 "query": query,
                 "relevant_ids": [doc["doc_id"]],
+                # Fragmento de origen (formato pedido en Aula Global:
+                # "<id documento>_c<n>"). Las recetas se indexan completas (son
+                # cortas), asi que cada una es un unico fragmento, el c00.
+                "source_chunk": f"{doc['doc_id']}_c00",
                 # campo auxiliar SOLO para la revision manual (se descarta al guardar):
                 "_source_preview": doc["text"][:200],
             }

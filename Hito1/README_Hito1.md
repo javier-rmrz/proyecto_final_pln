@@ -19,7 +19,7 @@ Hito1/
 │   └── foodcom.py                Adaptador del dataset Food.com -> corpus.jsonl
 ├── data/
 │   ├── corpus_foodcom.jsonl      Corpus: 10.000 recetas (Food.com)
-│   ├── queries.jsonl             34 consultas known-item (qid, query, relevant_ids)
+│   ├── queries.jsonl             34 consultas known-item (qid, query, relevant_ids, source_chunk)
 │   └── queries_raw.jsonl         Las 35 consultas originales del LLM, con el texto de origen
 ├── requirements_hito1.txt
 ├── MILESTONE_1.md                Entregable de una página
@@ -75,8 +75,14 @@ triviales/ambiguas o que copien el texto, y documéntalo en `REVISION_consultas.
 
 ## Decisiones de diseño
 
-- **Unidad de indexación**: receta completa (documentos cortos: mediana 109 palabras,
-  99 % por debajo de 424), por lo que la evaluación es directamente a nivel de documento.
+- **Unidad de indexación**: receta completa, sin fragmentar. Son documentos cortos (mediana de
+  109 palabras, p95 de 279, p99 de 424; solo el 1,3 % pasa de 400), así que casi todos caben
+  ya en un fragmento de 200–400 palabras. Partirlos separaría ingredientes de instrucciones sin
+  ganar nada. Cada receta es un único fragmento y la evaluación es directamente a nivel de documento.
+- **`source_chunk`**: el formato de `queries.jsonl` pide el fragmento de origen. Como cada
+  receta es un único fragmento, es siempre `<doc_id>_c00` (p. ej. `recipe_459551_c00`): conserva
+  el id del documento y uno propio del fragmento, y deja los ids listos para el Hito 2.
+  Recall@K y MRR se calculan con `relevant_ids`.
 - **Preprocesado idéntico** para documentos y consultas (spaCy: lematización, filtrado
   POS, stopwords) y **filtrado por frecuencia documental** (min_df=2, max_df=0.5·N).
 - **BM25**: implementación `rank_bm25.BM25Okapi`, k1=1.5, b=0.75.

@@ -7,9 +7,13 @@
 - **Corpus**: Food.com (Kaggle `irkaal/foodcom-recipes-and-reviews`), **10.000** recetas muestreadas
   de forma **estratificada por categoría** (291 categorías) con filtros de coherencia (≥2 pasos,
   instrucciones de longitud mínima, 2–20 ingredientes).
-- **Unidad de indexación**: la **receta completa** (título + ingredientes + instrucciones). Son documentos
-  cortos (mediana 109 palabras; el 99 % por debajo de 424), así que no se fragmentan y la evaluación
-  es directamente a nivel de documento.
+- **Unidad de indexación**: la **receta completa** (título + ingredientes + instrucciones), sin fragmentar,
+  y se mantendrá en todo el proyecto. Las recetas son **cortas**: mediana de 109 palabras, p95 de 279 y
+  p99 de 424; solo el 1,3 % pasa de 400. Casi todas caben ya en un fragmento de 200–400 palabras, que es
+  el tamaño que propone la guía. Partirlas no aportaría nada y separaría ingredientes de instrucciones,
+  cuando una consulta *known-item* describe el plato entero. Cada receta es, por tanto, **un único
+  fragmento**: la evaluación por fragmentos y por documento coinciden (no hay fragmentos que agrupar ni
+  documentos repetidos en el top-K).
 - **Preprocesado (spaCy `en_core_web_sm`)**: lematización, filtrado por categoría gramatical
   (NOUN/PROPN/VERB/ADJ/ADV), eliminación de stopwords y de tokens no alfabéticos, y filtrado por
   frecuencia documental (**min_df = 2**, **max_df = 0,5·N**; vocabulario final de 5.842 términos).
@@ -20,7 +24,12 @@
   receta y con su título (`src/review_queries.py`); se descartó 1 consulta y se regeneraron 5. En la
   revisión manual (14 consultas leídas junto a su receta) se **reescribieron a mano 7**: 3 que repetían
   el título, 2 con relleno vago del LLM (*"a specific type of rice"*) y 2 ambiguas (una casi idéntica a
-  otra consulta y un *fried rice* que valía para 29 recetas del corpus). Se guardan en `data/queries.jsonl`.
+  otra consulta y un *fried rice* que valía para 29 recetas del corpus). Se guardan en `data/queries.jsonl`
+  con el formato pedido, incluido el fragmento de origen: `{"qid", "query", "relevant_ids":
+  ["recipe_<id>"], "source_chunk": "recipe_<id>_c00"}`. Como cada receta es un único fragmento,
+  `source_chunk` siempre es el `c00` de su receta. Lo guardamos para respetar el formato
+  `<documento>_<fragmento>` (identificador del documento más uno propio del fragmento) y que los ids
+  encajen con la base vectorial del Hito 2. Las métricas se calculan con `relevant_ids`.
 - **Baselines**: TF-IDF + coseno (scikit-learn, `sublinear_tf`, norma L2) y BM25
   (`rank_bm25.BM25Okapi`, **k1 = 1,5**, **b = 0,75**).
 
@@ -52,8 +61,6 @@ evaluación de la **generación** con un LLM de pesos abiertos.
 
 ## Uso de herramientas de IA generativa
 - **Generación de consultas**: `llama3.1:8b` vía Ollama local (`/api/generate`, temperatura 0,7).
-- **Asistente de código**: hemos usado Claude Code (Claude Opus 5.5) como **apoyo en el desarrollo del
-  código** (preprocesado, baselines, evaluación, adaptador de Food.com, scripts de generación y cribado
-  de consultas, y el notebook) y en la **generación de los ficheros `.md`** (`MILESTONE_1.md`,
-  `README_Hito1.md` y `REVISION_consultas.md`). También preparó una propuesta razonada de la tercera
+- **Asistente de código**: hemos usado Claude Code como **apoyo en corrección del
+  código**, así como en los scripts de generación. También preparó una propuesta razonada de la tercera
   ronda de revisión manual, que el grupo comprobó frente a cada receta antes de firmarla.
